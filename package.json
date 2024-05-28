@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
+    "start": "node seed.ts",
+    "dev": "ts-node seed.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -15,6 +18,7 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "@upstash/vector": "^1.1.1",
     "csv-parser": "^3.0.0"
   }
 }

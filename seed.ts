@@ -1,8 +1,14 @@
 import csv from "csv-parser";
 import fs from "fs";
+import { Index } from "@upstash/vector";
+
+const index = new Index({
+  url: "https://on-shad-49680-us1-vector.upstash.io",
+  token: "********",
+});
 
 interface CsvRow {
-  row: string;
+  text: string;
 }
 
 async function parseCSV(filepath: string): Promise<CsvRow[]> {
@@ -25,3 +31,19 @@ async function parseCSV(filepath: string): Promise<CsvRow[]> {
       });
   });
 }
+const STEP = 30;
+const seed = async () => {
+  const res = await parseCSV("training_dataset.csv");
+
+  for (let i = 0; i < res.length; i += STEP) {
+    const chunk = res.slice(i, i + STEP);
+    const formatted = chunk.map((row, batchIndex) => ({
+      data: row.text,
+      id: i + batchIndex,
+      metadata: { text: row.text },
+    }));
+    await index.upsert(formatted);
+  }
+};
+
+seed();
